@@ -119,11 +119,19 @@ Osmosis Portal is a comprehensive study visa management system built with React,
 - **Auto-scaling**: Configured for dynamic scaling
 - **Monitoring**: Built-in request logging and error handling
 
-## Changelog
+## Recent Changes
 
 ```
-Changelog:
-- June 19, 2025. Initial setup
+- June 19, 2025: Implemented role-based login system with dropdown selection
+- June 19, 2025: Fixed sidebar navigation functionality with tabbed interface
+- June 19, 2025: Added comprehensive student dashboard with working sections:
+  * Overview with stats and quick actions
+  * University Search with filtering
+  * My Applications with management tools
+  * Document Manager for file uploads
+  * Visa Tracker for application progress
+  * Scholarships discovery and applications
+  * Support Center with help resources
 ```
 
 ## User Preferences

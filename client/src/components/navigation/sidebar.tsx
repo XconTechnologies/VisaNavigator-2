@@ -123,11 +123,15 @@ export default function Sidebar({
                     key={item.name}
                     href={item.href}
                     className={cn(
-                      "group flex items-center px-2 py-2 text-sm font-medium rounded-md",
+                      "group flex items-center px-2 py-2 text-sm font-medium rounded-md cursor-pointer",
                       item.current
                         ? "bg-blue-600 text-white"
                         : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
                     )}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      window.location.hash = item.href.substring(1);
+                    }}
                   >
                     <Icon className="mr-3 flex-shrink-0 h-4 w-4" />
                     {item.name}
