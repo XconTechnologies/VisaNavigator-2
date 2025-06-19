@@ -1,8 +1,53 @@
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { GraduationCap, Users, Building, Settings } from "lucide-react";
 
 export default function Landing() {
+  const [loginModalOpen, setLoginModalOpen] = useState(false);
+  const [selectedRole, setSelectedRole] = useState("");
+
+  const handleLogin = () => {
+    if (!selectedRole) {
+      return;
+    }
+    // Pass selected role as query parameter to login endpoint
+    window.location.href = `/api/login?role=${selectedRole}`;
+  };
+
+  const roles = [
+    {
+      id: "student",
+      name: "Student",
+      description: "Apply to universities and track your applications",
+      icon: GraduationCap,
+      color: "text-blue-600",
+    },
+    {
+      id: "agent",
+      name: "Educational Agent",
+      description: "Manage student leads and track commissions",
+      icon: Users,
+      color: "text-emerald-600",
+    },
+    {
+      id: "university",
+      name: "University Representative",
+      description: "Manage applications and university programs",
+      icon: Building,
+      color: "text-amber-600",
+    },
+    {
+      id: "admin",
+      name: "System Administrator",
+      description: "Manage system users and analytics",
+      icon: Settings,
+      color: "text-purple-600",
+    },
+  ];
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
       <div className="container mx-auto px-4 py-16">
@@ -11,13 +56,74 @@ export default function Landing() {
           <p className="text-xl text-gray-600 mb-8">
             Your comprehensive study visa management system
           </p>
-          <Button 
-            size="lg" 
-            className="bg-blue-600 hover:bg-blue-700"
-            onClick={() => window.location.href = '/api/login'}
-          >
-            Get Started
-          </Button>
+          
+          <Dialog open={loginModalOpen} onOpenChange={setLoginModalOpen}>
+            <DialogTrigger asChild>
+              <Button 
+                size="lg" 
+                className="bg-blue-600 hover:bg-blue-700"
+              >
+                Get Started
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="max-w-md">
+              <DialogHeader>
+                <DialogTitle>Choose Your Role</DialogTitle>
+              </DialogHeader>
+              <div className="space-y-4">
+                <p className="text-sm text-gray-600">
+                  Please select your role to access the appropriate dashboard and features.
+                </p>
+                
+                <div className="space-y-3">
+                  {roles.map((role) => {
+                    const Icon = role.icon;
+                    return (
+                      <div
+                        key={role.id}
+                        className={`p-3 border-2 rounded-lg cursor-pointer transition-all ${
+                          selectedRole === role.id
+                            ? "border-blue-500 bg-blue-50"
+                            : "border-gray-200 hover:border-gray-300 hover:bg-gray-50"
+                        }`}
+                        onClick={() => setSelectedRole(role.id)}
+                      >
+                        <div className="flex items-center space-x-3">
+                          <Icon className={`w-6 h-6 ${role.color}`} />
+                          <div className="flex-1">
+                            <div className="font-medium text-gray-900">{role.name}</div>
+                            <div className="text-sm text-gray-500">{role.description}</div>
+                          </div>
+                          {selectedRole === role.id && (
+                            <div className="w-4 h-4 bg-blue-500 rounded-full flex items-center justify-center">
+                              <div className="w-2 h-2 bg-white rounded-full"></div>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+
+                <div className="flex items-center space-x-3 pt-4">
+                  <Button 
+                    variant="outline" 
+                    className="flex-1"
+                    onClick={() => setLoginModalOpen(false)}
+                  >
+                    Cancel
+                  </Button>
+                  <Button 
+                    className="flex-1 bg-blue-600 hover:bg-blue-700"
+                    onClick={handleLogin}
+                    disabled={!selectedRole}
+                  >
+                    Continue
+                  </Button>
+                </div>
+              </div>
+            </DialogContent>
+          </Dialog>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">

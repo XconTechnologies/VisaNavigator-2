@@ -56,14 +56,19 @@ function updateUserSession(
 
 async function upsertUser(
   claims: any,
+  selectedRole?: string,
 ) {
-  await storage.upsertUser({
+  // Create or update user with selected role
+  const userData = {
     id: claims["sub"],
     email: claims["email"],
     firstName: claims["first_name"],
     lastName: claims["last_name"],
     profileImageUrl: claims["profile_image_url"],
-  });
+    role: selectedRole as "student" | "agent" | "university" | "admin" || "student", // Default to student
+  };
+  
+  await storage.upsertUser(userData);
 }
 
 export async function setupAuth(app: Express) {
@@ -76,11 +81,21 @@ export async function setupAuth(app: Express) {
 
   const verify: VerifyFunction = async (
     tokens: client.TokenEndpointResponse & client.TokenEndpointResponseHelpers,
-    verified: passport.AuthenticateCallback
+    verified: passport.AuthenticateCallback,
+    req: any
   ) => {
     const user = {};
     updateUserSession(user, tokens);
-    await upsertUser(tokens.claims());
+    
+    // Get selected role from session or query params
+    const selectedRole = req.session?.selectedRole || req.query?.role;
+    await upsertUser(tokens.claims(), selectedRole);
+    
+    // Clear the selected role from session after use
+    if (req.session?.selectedRole) {
+      delete req.session.selectedRole;
+    }
+    
     verified(null, user);
   };
 
@@ -102,6 +117,11 @@ export async function setupAuth(app: Express) {
   passport.deserializeUser((user: Express.User, cb) => cb(null, user));
 
   app.get("/api/login", (req, res, next) => {
+    // Store selected role in session if provided
+    if (req.query.role) {
+      req.session.selectedRole = req.query.role;
+    }
+    
     passport.authenticate(`replitauth:${req.hostname}`, {
       prompt: "login consent",
       scope: ["openid", "email", "profile", "offline_access"],
