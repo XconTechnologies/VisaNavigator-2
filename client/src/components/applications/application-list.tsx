@@ -13,10 +13,61 @@ export default function ApplicationList() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [statusFilter, setStatusFilter] = useState("all");
+  const [newApplicationOpen, setNewApplicationOpen] = useState(false);
+  const [selectedUniversity, setSelectedUniversity] = useState("");
+  const [selectedProgram, setSelectedProgram] = useState("");
 
   const { data: applications, isLoading } = useQuery({
     queryKey: ["/api/applications"],
   });
+
+  const { data: universities } = useQuery({
+    queryKey: ["/api/universities"],
+  });
+
+  const { data: programs } = useQuery({
+    queryKey: ["/api/programs", selectedUniversity],
+    enabled: !!selectedUniversity,
+  });
+
+  const createApplicationMutation = useMutation({
+    mutationFn: async (applicationData: any) => {
+      await apiRequest('/api/applications', {
+        method: 'POST',
+        body: JSON.stringify(applicationData),
+        headers: { 'Content-Type': 'application/json' }
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/applications'] });
+      setNewApplicationOpen(false);
+      setSelectedUniversity("");
+      setSelectedProgram("");
+      toast({
+        title: "Success",
+        description: "Application created successfully.",
+      });
+    },
+    onError: () => {
+      toast({
+        title: "Error",
+        description: "Failed to create application.",
+        variant: "destructive",
+      });
+    }
+  });
+
+  const handleCreateApplication = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    
+    createApplicationMutation.mutate({
+      universityId: parseInt(selectedUniversity),
+      programId: parseInt(selectedProgram),
+      personalStatement: formData.get('personalStatement'),
+      status: 'draft'
+    });
+  };
 
   const updateApplicationMutation = useMutation({
     mutationFn: async ({ id, status }: { id: number; status: string }) => {

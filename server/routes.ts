@@ -142,6 +142,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  app.get('/api/universities', async (req, res) => {
+    try {
+      const universities = await storage.getAllUniversities();
+      res.json(universities);
+    } catch (error) {
+      console.error("Error fetching universities:", error);
+      res.status(500).json({ message: "Failed to fetch universities" });
+    }
+  });
+
+  app.get('/api/programs/:universityId', async (req, res) => {
+    try {
+      const universityId = parseInt(req.params.universityId);
+      const programs = await storage.getUniversityPrograms(universityId);
+      res.json(programs);
+    } catch (error) {
+      console.error("Error fetching programs:", error);
+      res.status(500).json({ message: "Failed to fetch programs" });
+    }
+  });
+
   app.get('/api/universities/search', async (req, res) => {
     try {
       const { country, field, budgetMin, budgetMax } = req.query;
