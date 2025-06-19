@@ -198,9 +198,78 @@ export default function ApplicationList() {
               <SelectItem value="visa_rejected">Visa Rejected</SelectItem>
             </SelectContent>
           </Select>
-          <Button className="bg-blue-600 hover:bg-blue-700">
-            New Application
-          </Button>
+          
+          <Dialog open={newApplicationOpen} onOpenChange={setNewApplicationOpen}>
+            <DialogTrigger asChild>
+              <Button className="bg-blue-600 hover:bg-blue-700">
+                <Plus className="mr-2 h-4 w-4" />
+                New Application
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="max-w-2xl">
+              <DialogHeader>
+                <DialogTitle>Create New Application</DialogTitle>
+              </DialogHeader>
+              <form onSubmit={handleCreateApplication} className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="university">University</Label>
+                    <Select value={selectedUniversity} onValueChange={setSelectedUniversity}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select university" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {universities?.map((uni: any) => (
+                          <SelectItem key={uni.id} value={uni.id.toString()}>
+                            {uni.universityName} - {uni.country}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  
+                  <div>
+                    <Label htmlFor="program">Program</Label>
+                    <Select value={selectedProgram} onValueChange={setSelectedProgram} disabled={!selectedUniversity}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select program" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {programs?.map((program: any) => (
+                          <SelectItem key={program.id} value={program.id.toString()}>
+                            {program.programName} ({program.degree})
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+                
+                <div>
+                  <Label htmlFor="personalStatement">Personal Statement</Label>
+                  <Textarea
+                    name="personalStatement"
+                    placeholder="Tell us why you want to study this program..."
+                    className="min-h-[100px]"
+                    required
+                  />
+                </div>
+                
+                <div className="flex justify-end space-x-3">
+                  <Button type="button" variant="outline" onClick={() => setNewApplicationOpen(false)}>
+                    Cancel
+                  </Button>
+                  <Button 
+                    type="submit" 
+                    className="bg-blue-600 hover:bg-blue-700"
+                    disabled={createApplicationMutation.isPending || !selectedUniversity || !selectedProgram}
+                  >
+                    {createApplicationMutation.isPending ? "Creating..." : "Create Application"}
+                  </Button>
+                </div>
+              </form>
+            </DialogContent>
+          </Dialog>
         </div>
       </div>
 
