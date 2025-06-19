@@ -173,10 +173,14 @@ export default function ApplicationList() {
 
   return (
     <div className="space-y-6">
-      {/* Filters */}
+      {/* Header and Controls */}
       <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-bold text-gray-900">My Applications</h2>
-        <div className="flex items-center space-x-3">
+        <div>
+          <h3 className="text-lg font-medium text-gray-900">My Applications</h3>
+          <p className="text-sm text-gray-500">Track your university applications</p>
+        </div>
+        
+        <div className="flex space-x-3">
           <Select value={statusFilter} onValueChange={setStatusFilter}>
             <SelectTrigger className="w-[180px]">
               <SelectValue placeholder="Filter by status" />
