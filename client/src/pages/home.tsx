@@ -1,5 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
+import { apiRequest } from "@/lib/queryClient";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useToast } from "@/hooks/use-toast";
 import Header from "@/components/navigation/header";
 import Sidebar from "@/components/navigation/sidebar";
 import StudentDashboard from "@/components/dashboard/student-dashboard";
@@ -11,10 +14,52 @@ import DocumentUploadModal from "@/components/modals/document-upload-modal";
 
 export default function Home() {
   const { user } = useAuth();
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [roleSwitcherOpen, setRoleSwitcherOpen] = useState(false);
   const [documentUploadOpen, setDocumentUploadOpen] = useState(false);
   const [currentRole, setCurrentRole] = useState(user?.role || "student");
+
+  const updateRoleMutation = useMutation({
+    mutationFn: async (role: string) => {
+      await apiRequest('/api/auth/user/role', {
+        method: 'POST',
+        body: JSON.stringify({ role }),
+        headers: { 'Content-Type': 'application/json' }
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/auth/user'] });
+      toast({
+        title: "Role updated",
+        description: "Your role has been updated successfully.",
+      });
+    },
+    onError: () => {
+      toast({
+        title: "Error",
+        description: "Failed to update role.",
+        variant: "destructive",
+      });
+    }
+  });
+
+  // Handle pending role from localStorage after login
+  useEffect(() => {
+    const pendingRole = localStorage.getItem('pendingRole');
+    if (pendingRole && user && user.role !== pendingRole) {
+      updateRoleMutation.mutate(pendingRole);
+      localStorage.removeItem('pendingRole');
+    }
+  }, [user]);
+
+  const handleRoleChange = (newRole: string) => {
+    setCurrentRole(newRole);
+    if (user && user.role !== newRole) {
+      updateRoleMutation.mutate(newRole);
+    }
+  };
 
   const renderDashboard = () => {
     switch (currentRole) {
@@ -65,7 +110,7 @@ export default function Home() {
         open={roleSwitcherOpen}
         onOpenChange={setRoleSwitcherOpen}
         currentRole={currentRole}
-        onRoleChange={setCurrentRole}
+        onRoleChange={handleRoleChange}
       />
 
       <DocumentUploadModal 

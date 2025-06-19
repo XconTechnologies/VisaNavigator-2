@@ -13,8 +13,9 @@ export default function Landing() {
     if (!selectedRole) {
       return;
     }
-    // Pass selected role as query parameter to login endpoint
-    window.location.href = `/api/login?role=${selectedRole}`;
+    // Store selected role in localStorage for after login
+    localStorage.setItem('pendingRole', selectedRole);
+    window.location.href = '/api/login';
   };
 
   const roles = [
