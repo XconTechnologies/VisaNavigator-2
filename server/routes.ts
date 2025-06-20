@@ -155,6 +155,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get('/api/programs/:universityId', async (req, res) => {
     try {
       const universityId = parseInt(req.params.universityId);
+      if (isNaN(universityId)) {
+        return res.status(400).json({ message: "Invalid university ID" });
+      }
       const programs = await storage.getUniversityPrograms(universityId);
       res.json(programs);
     } catch (error) {

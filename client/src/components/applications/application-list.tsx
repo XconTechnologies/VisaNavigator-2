@@ -30,6 +30,7 @@ export default function ApplicationList() {
 
   const { data: programs } = useQuery({
     queryKey: ["/api/programs", selectedUniversity],
+    queryFn: () => fetch(`/api/programs/${selectedUniversity}`).then(res => res.json()),
     enabled: !!selectedUniversity,
   });
 
