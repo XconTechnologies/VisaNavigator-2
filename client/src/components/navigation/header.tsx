@@ -30,7 +30,7 @@ export default function Header({ user, sidebarOpen, setSidebarOpen }: HeaderProp
             </Button>
             <div className="flex-shrink-0">
               <img 
-                src="/attached_assets/WhatsApp_Image_2025-04-05_at_4.01.16_PM-removebg-preview-1_1750422750968.webp" 
+                src="/attached_assets/WhatsApp_Image_2025-04-05_at_4.01.16_PM-removebg-preview-1_1750423087098.webp" 
                 alt="Osmosis Portal" 
                 className="h-8 w-auto"
               />

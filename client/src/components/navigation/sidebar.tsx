@@ -105,7 +105,7 @@ export default function Sidebar({
           {/* Logo at the top of sidebar */}
           <div className="flex justify-center px-4 pb-4 border-b border-gray-200">
             <img 
-              src="/attached_assets/WhatsApp_Image_2025-04-05_at_4.01.16_PM-removebg-preview-1_1750422750968.webp" 
+              src="/attached_assets/WhatsApp_Image_2025-04-05_at_4.01.16_PM-removebg-preview-1_1750423087098.webp" 
               alt="Osmosis Portal" 
               className="h-10 w-auto"
             />
