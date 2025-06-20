@@ -102,7 +102,16 @@ export default function Sidebar({
         sidebarOpen ? "translate-x-0" : "-translate-x-full"
       )}>
         <div className="flex flex-col flex-grow pt-5 pb-4 overflow-y-auto border-r border-gray-200 mt-16">
-          <div className="flex items-center flex-shrink-0 px-4">
+          {/* Logo at the top of sidebar */}
+          <div className="flex justify-center px-4 pb-4 border-b border-gray-200">
+            <img 
+              src="/attached_assets/WhatsApp_Image_2025-04-05_at_4.01.16_PM-removebg-preview-1_1750422750968.webp" 
+              alt="Osmosis Portal" 
+              className="h-10 w-auto"
+            />
+          </div>
+          
+          <div className="flex items-center flex-shrink-0 px-4 mt-4">
             <div className="w-full">
               <div className="bg-gray-100 rounded-lg p-3">
                 <div className="text-sm font-medium text-gray-900">
