@@ -177,7 +177,7 @@ export default function UniversitySearch() {
               </p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 gap-6 lg:grid-cols-2 max-h-96 overflow-y-auto">
+            <div className="grid grid-cols-1 gap-6 lg:grid-cols-2 max-h-[500px] overflow-y-auto pr-2">
               {universities.map((university: any) => (
                 <Card key={university.id} className="hover:shadow-lg transition-shadow">
                   <CardHeader>

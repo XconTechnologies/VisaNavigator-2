@@ -307,7 +307,7 @@ export default function StudentDashboard() {
           <CardHeader>
             <CardTitle>Smart University Finder</CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="max-h-screen overflow-visible">
             <UniversitySearch />
           </CardContent>
         </Card>
