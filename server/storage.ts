@@ -253,24 +253,59 @@ export class DatabaseStorage implements IStorage {
     budgetMin?: number;
     budgetMax?: number;
   }): Promise<(UniversityProfile & { programs: UniversityProgram[] })[]> {
-    const universities = await db.query.universityProfiles.findMany({
-      where: (university, { eq, and }) => and(
-        eq(university.isActive, true),
-        filters.country ? eq(university.country, filters.country) : undefined
-      ),
-      with: {
-        programs: {
-          where: (program, { eq, and, gte, lte }) => and(
-            eq(program.isActive, true),
-            filters.field ? eq(program.field, filters.field) : undefined,
-            filters.budgetMin ? gte(program.tuitionFee, filters.budgetMin) : undefined,
-            filters.budgetMax ? lte(program.tuitionFee, filters.budgetMax) : undefined
-          )
-        }
-      }
-    });
+    let whereConditions: any[] = [eq(universityProfiles.isActive, true)];
+    
+    // Add country filter if provided
+    if (filters.country && filters.country.trim() !== '') {
+      whereConditions.push(eq(universityProfiles.country, filters.country));
+    }
 
-    return universities as (UniversityProfile & { programs: UniversityProgram[] })[];
+    const universities = await db
+      .select({
+        id: universityProfiles.id,
+        userId: universityProfiles.userId,
+        universityName: universityProfiles.universityName,
+        country: universityProfiles.country,
+        city: universityProfiles.city,
+        website: universityProfiles.website,
+        description: universityProfiles.description,
+        isActive: universityProfiles.isActive,
+        createdAt: universityProfiles.createdAt,
+        updatedAt: universityProfiles.updatedAt,
+      })
+      .from(universityProfiles)
+      .where(and(...whereConditions));
+
+    // Get programs for each university with filters
+    const universitiesWithPrograms = await Promise.all(
+      universities.map(async (university) => {
+        let programWhereConditions: any[] = [
+          eq(universityPrograms.universityId, university.id),
+          eq(universityPrograms.isActive, true)
+        ];
+
+        if (filters.field && filters.field.trim() !== '') {
+          programWhereConditions.push(eq(universityPrograms.field, filters.field));
+        }
+        
+        if (filters.budgetMin) {
+          programWhereConditions.push(gte(universityPrograms.tuitionFee, filters.budgetMin));
+        }
+        
+        if (filters.budgetMax) {
+          programWhereConditions.push(lte(universityPrograms.tuitionFee, filters.budgetMax));
+        }
+
+        const programs = await db
+          .select()
+          .from(universityPrograms)
+          .where(and(...programWhereConditions));
+
+        return { ...university, programs };
+      })
+    );
+
+    return universitiesWithPrograms;
   }
 
   // Application operations
