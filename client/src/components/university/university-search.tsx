@@ -13,29 +13,17 @@ export default function UniversitySearch() {
     budgetMin: "",
     budgetMax: "",
   });
-  const [searchMode, setSearchMode] = useState<'local' | 'external'>('local');
 
   const { data: universities, isLoading, refetch } = useQuery({
-    queryKey: searchMode === 'external' ? ["/api/universities/external", { country: filters.country }] : ["/api/universities/search", filters],
+    queryKey: ["/api/universities/search", filters],
     enabled: false, // Only search when button is clicked
   });
 
   const handleSearch = () => {
-    if (searchMode === 'external' && !filters.country) {
-      alert('Please select a country for external search');
-      return;
-    }
-    
     refetch();
   };
 
-  const handleModeChange = (mode: 'local' | 'external') => {
-    setSearchMode(mode);
-    setFilters(prev => ({ ...prev, country: "", field: "", budgetMin: "", budgetMax: "" }));
-  };
-
   const countries = [
-    "Pakistan",
     "United States",
     "United Kingdom", 
     "Canada",
@@ -48,11 +36,7 @@ export default function UniversitySearch() {
     "Japan",
     "Singapore",
     "India",
-    "China",
-    "South Korea",
-    "New Zealand",
-    "Norway",
-    "Finland"
+    "China"
   ];
 
   const fields = [
@@ -163,24 +147,14 @@ export default function UniversitySearch() {
         </div>
       </div>
 
-      <div className="flex flex-col sm:flex-row gap-3">
-        <Button 
-          onClick={handleSearch}
-          className="flex-1 sm:flex-initial bg-blue-600 hover:bg-blue-700"
-          disabled={isLoading || (searchMode === 'external' && !filters.country)}
-        >
-          <Search className="mr-2 h-4 w-4" />
-          {isLoading ? "Searching..." : searchMode === 'external' ? "Search Global Universities" : "Search Our Database"}
-        </Button>
-        
-        {searchMode === 'external' && (
-          <div className="text-sm text-gray-600 flex items-center">
-            <span className="bg-green-100 text-green-800 px-2 py-1 rounded">
-              Live API Search
-            </span>
-          </div>
-        )}
-      </div>
+      <Button 
+        onClick={handleSearch}
+        className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700"
+        disabled={isLoading}
+      >
+        <Search className="mr-2 h-4 w-4" />
+        {isLoading ? "Searching..." : "Search Universities"}
+      </Button>
 
       {/* Search Results */}
       {universities && (
