@@ -35,11 +35,7 @@ export default function ApplicationList() {
 
   const createApplicationMutation = useMutation({
     mutationFn: async (applicationData: any) => {
-      await apiRequest('/api/applications', {
-        method: 'POST',
-        body: JSON.stringify(applicationData),
-        headers: { 'Content-Type': 'application/json' }
-      });
+      await apiRequest('POST', '/api/applications', applicationData);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/applications'] });
