@@ -29,7 +29,11 @@ export default function Header({ user, sidebarOpen, setSidebarOpen }: HeaderProp
               {sidebarOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
             </Button>
             <div className="flex-shrink-0">
-              <h1 className="text-2xl font-bold text-blue-600">Osmosis Portal</h1>
+              <img 
+                src="/attached_assets/WhatsApp_Image_2025-04-05_at_4.01.16_PM-removebg-preview-1_1750422750968.webp" 
+                alt="Osmosis Portal" 
+                className="h-8 w-auto"
+              />
             </div>
             <nav className="hidden md:ml-8 md:flex md:space-x-8">
               <a href="#dashboard" className="text-gray-900 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium">
