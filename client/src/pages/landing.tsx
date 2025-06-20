@@ -53,7 +53,13 @@ export default function Landing() {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
       <div className="container mx-auto px-4 py-16">
         <div className="text-center mb-16">
-          <h1 className="text-5xl font-bold text-blue-600 mb-4">Osmosis Portal</h1>
+          <div className="flex justify-center mb-6">
+            <img 
+              src="/attached_assets/WhatsApp_Image_2025-04-05_at_4.01.16_PM-removebg-preview-1_1750422750968.webp" 
+              alt="Osmosis Portal" 
+              className="h-20 w-auto"
+            />
+          </div>
           <p className="text-xl text-gray-600 mb-8">
             Your comprehensive study visa management system
           </p>
