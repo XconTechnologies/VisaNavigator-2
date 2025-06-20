@@ -206,9 +206,12 @@ export default function ApplicationList() {
                 New Application
               </Button>
             </DialogTrigger>
-            <DialogContent className="max-w-2xl">
+            <DialogContent className="max-w-2xl" aria-describedby="create-application-description">
               <DialogHeader>
                 <DialogTitle>Create New Application</DialogTitle>
+                <div id="create-application-description" className="text-sm text-gray-600">
+                  Select a university and program to start your application process.
+                </div>
               </DialogHeader>
               <form onSubmit={handleCreateApplication} className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
